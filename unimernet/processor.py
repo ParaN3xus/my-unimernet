@@ -1,0 +1,1 @@
+from .components.processor.image_processor import UniMEREvalImageProcessor, UniMERTrainImageProcessor
