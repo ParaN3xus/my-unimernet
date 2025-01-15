@@ -1,17 +1,17 @@
 from torch import nn
 from transformers.models.swin.modeling_swin import SwinStage
-from layer import UnimerNetEncoderLayer
+from .layer import UniMERNetEncoderLayer
 
-# Copied from transformers.models.swin.modeling_swin.SwinStage with Swin->UnimerNet
+# Copied from transformers.models.swin.modeling_swin.SwinStage with Swin->UniMERNet
 
 
-class UnimerNetEncoderStage(SwinStage):
+class UniMERNetEncoderStage(SwinStage):
     def __init__(self, config, dim, input_resolution, depth, num_heads, drop_path, downsample):
         super().__init__(config, dim, input_resolution,
                          depth, num_heads, drop_path, downsample)
         self.blocks = nn.ModuleList(
             [
-                UnimerNetEncoderLayer(
+                UniMERNetEncoderLayer(
                     config=config,
                     dim=dim,
                     input_resolution=input_resolution,

@@ -1,45 +1,43 @@
-from transformers import SwinModel
+from transformers import SwinModel, DonutSwinConfig
 from transformers.models.swin.modeling_swin import SwinEncoder, SwinPatchMerging
-from configuration import UnimerNetConfig
 from torch import nn
-from embeddings.embeddings import UnimerNetEmbeddings
-from layers.stage import UnimerNetEncoderStage
+from .embeddings.embeddings import UniMERNetEmbeddings
+from .layers.stage import UniMERNetEncoderStage
+import torch
+
+# should remove layernorm
 
 
-class UnimerNetEncoder(SwinModel):
-    config_class = UnimerNetConfig
+class UniMERNetEncoderModel(SwinModel):
+    config_class = DonutSwinConfig
 
     def __init__(self, config, add_pooling_layer=True, use_mask_token=False):
-        print("VariableUnimerNetModel init")
-        super().__init__(config)
+        super().__init__(config, add_pooling_layer, use_mask_token)
 
-        self.config = config
-        self.num_layers = len(config.depths)
-        self.num_features = int(config.embed_dim * 2 ** (self.num_layers - 1))
-
-        self.embeddings = UnimerNetEmbeddings(
+        self.embeddings = UniMERNetEmbeddings(
             config, use_mask_token=use_mask_token)
-        self.encoder = UnimerNetEncoder(config, self.embeddings.patch_grid)
-
-        self.pooler = nn.AdaptiveAvgPool1d(1) if add_pooling_layer else None
+        self.encoder = UniMERNetEncoder(config, self.embeddings.patch_grid)
 
         # Initialize weights and apply final processing
         self.post_init()
 
 
-class UnimerNetEncoder(SwinEncoder):
+class UniMERNetEncoder(SwinEncoder):
     def __init__(self, config, grid_size):
         super().__init__(config, grid_size)
+
+        dpr = [x.item() for x in torch.linspace(
+            0, config.drop_path_rate, sum(config.depths))]
         self.layers = nn.ModuleList(
             [
-                UnimerNetEncoderStage(
+                UniMERNetEncoderStage(
                     config=config,
                     dim=int(config.embed_dim * 2**i_layer),
                     input_resolution=(
                         grid_size[0] // (2**i_layer), grid_size[1] // (2**i_layer)),
                     depth=config.depths[i_layer],
                     num_heads=config.num_heads[i_layer],
-                    drop_path=self.dpr[sum(config.depths[:i_layer]): sum(
+                    drop_path=dpr[sum(config.depths[:i_layer]): sum(
                         config.depths[: i_layer + 1])],
                     downsample=SwinPatchMerging if (
                         i_layer < self.num_layers - 1) else None,

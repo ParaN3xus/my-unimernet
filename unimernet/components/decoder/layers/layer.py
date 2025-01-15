@@ -1,8 +1,8 @@
 from transformers.models.mbart.modeling_mbart import MBartConfig, MBartDecoderLayer
-from attn import MBART_ATTENTION_CLASSES
+from .attn import MBART_ATTENTION_CLASSES
 
 
-class UnimerNetDecoderLayer(MBartDecoderLayer):
+class UniMERNetDecoderLayer(MBartDecoderLayer):
     def __init__(self, config: MBartConfig):
         super().__init__(config)
 

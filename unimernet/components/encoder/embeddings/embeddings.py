@@ -2,10 +2,10 @@ from typing import Optional, Tuple
 from transformers.models.swin.modeling_swin import SwinEmbeddings
 from torch import nn
 import torch
-from patch_embeddings import UnimerNetPatchEmbeddings
+from .patch_embeddings import UniMERNetPatchEmbeddings
 
 
-class UnimerNetEmbeddings(SwinEmbeddings):
+class UniMERNetEmbeddings(SwinEmbeddings):
     """
     Construct the patch and position embeddings. Optionally, also the mask token.
     """
@@ -13,7 +13,7 @@ class UnimerNetEmbeddings(SwinEmbeddings):
     def __init__(self, config, use_mask_token=False):
         super().__init__(config, use_mask_token)
 
-        self.patch_embeddings = UnimerNetPatchEmbeddings(config)
+        self.patch_embeddings = UniMERNetPatchEmbeddings(config)
         num_patches = self.patch_embeddings.num_patches
         self.patch_grid = self.patch_embeddings.grid_size
         self.mask_token = nn.Parameter(torch.zeros(

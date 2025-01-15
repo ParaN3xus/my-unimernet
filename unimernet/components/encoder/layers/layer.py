@@ -3,12 +3,12 @@ import torch
 from torch import nn
 from transformers.models.swin.modeling_swin import SwinLayer, window_partition, window_reverse
 from transformers.utils import torch_int
-from conv_enhance import ConvEnhance
+from .conv_enhance import ConvEnhance
 
-# Copied from transformers.models.swin.modeling_swin.SwinLayer with Swin->UnimerNet
+# Copied from transformers.models.swin.modeling_swin.SwinLayer with Swin->UniMERNet
 
 
-class UnimerNetEncoderLayer(SwinLayer):
+class UniMERNetEncoderLayer(SwinLayer):
     def __init__(self, config, dim, input_resolution, num_heads):
         super().__init__(config, dim, input_resolution, num_heads, shift_size=0)
 

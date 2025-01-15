@@ -69,18 +69,18 @@ class SqueezeAttention(BartAttention):
         elif is_cross_attention:
             # cross_attentions
             key_states = self._shape_qk(self.k_proj(key_value_states), -1, bsz)
-            value_states = self._shape_v(
+            value_states = self._shape(
                 self.v_proj(key_value_states), -1, bsz)
         elif past_key_value is not None:
             # reuse k, v, self_attention
             key_states = self._shape_qk(self.k_proj(hidden_states), -1, bsz)
-            value_states = self._shape_v(self.v_proj(hidden_states), -1, bsz)
+            value_states = self._shape(self.v_proj(hidden_states), -1, bsz)
             key_states = torch.cat([past_key_value[0], key_states], dim=2)
             value_states = torch.cat([past_key_value[1], value_states], dim=2)
         else:
             # self_attention
             key_states = self._shape_qk(self.k_proj(hidden_states), -1, bsz)
-            value_states = self._shape_v(self.v_proj(hidden_states), -1, bsz)
+            value_states = self._shape(self.v_proj(hidden_states), -1, bsz)
 
         if self.is_decoder:
             # if cross_attention save Tuple(torch.Tensor, torch.Tensor) of all cross attention key/value_states.

@@ -39,7 +39,7 @@ import albumentations as alb
 logger = logging.get_logger(__name__)
 
 
-class UniMERBaseImageProcessor(BaseImageProcessor):
+class UniMERNetBaseImageProcessor(BaseImageProcessor):
     model_input_names = ["pixel_values"]
 
     def __init__(
@@ -185,7 +185,7 @@ class UniMERBaseImageProcessor(BaseImageProcessor):
         return BatchFeature(data=data, tensor_type=return_tensors)
 
 
-class UniMEREvalImageProcessor(UniMERBaseImageProcessor):
+class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
     def __init__(
         self,
         size: Optional[Dict[str, int]] = None,
@@ -223,7 +223,7 @@ class UniMEREvalImageProcessor(UniMERBaseImageProcessor):
         return super().postprocess(images, return_tensors)
 
 
-class UniMERTrainImageProcessor(UniMERBaseImageProcessor):
+class UniMERNetTrainImageProcessor(UniMERNetBaseImageProcessor):
     def __init__(
         self,
         size: Optional[Dict[str, int]] = None,
