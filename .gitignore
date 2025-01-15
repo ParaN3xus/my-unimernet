@@ -3,4 +3,8 @@
 .venv
 
 # compiled cache
+__pycache__
 *.pyc
+
+# local
+local/
