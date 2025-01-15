@@ -1,0 +1,6 @@
+
+# virtual env
+.venv
+
+# compiled cache
+*.pyc
