@@ -21,8 +21,8 @@ class Erosion(alb.ImageOnlyTransform):
         numpy.ndarray: The transformed image.
     """
 
-    def __init__(self, scale, always_apply=False, p=0.5):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, scale, p=0.5):
+        super().__init__(p=p)
         if type(scale) is tuple or type(scale) is list:
             assert len(scale) == 2
             self.scale = scale
@@ -56,8 +56,8 @@ class Dilation(alb.ImageOnlyTransform):
         numpy.ndarray: The transformed image.
     """
 
-    def __init__(self, scale, always_apply=False, p=0.5):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, scale, p=0.5):
+        super().__init__(p=p)
         if type(scale) is tuple or type(scale) is list:
             assert len(scale) == 2
             self.scale = scale
@@ -89,8 +89,8 @@ class Bitmap(alb.ImageOnlyTransform):
         numpy.ndarray: The transformed image.
     """
 
-    def __init__(self, value=0, lower=200, always_apply=False, p=0.5):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, value=0, lower=200, p=0.5):
+        super().__init__(p=p)
         self.lower = lower
         self.value = value
 

@@ -12,8 +12,8 @@ from .ops import plasma_fractal
 
 
 class Fog(alb.ImageOnlyTransform):
-    def __init__(self, mag=-1, always_apply=False, p=1.):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, mag=-1,  p=1.):
+        super().__init__(p=p)
         self.rng = np.random.default_rng()
         self.mag = mag
 
@@ -49,8 +49,8 @@ class Fog(alb.ImageOnlyTransform):
 
 
 class Frost(alb.ImageOnlyTransform):
-    def __init__(self, mag=-1, always_apply=False, p=1.):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, mag=-1,  p=1.):
+        super().__init__(p=p)
         self.rng = np.random.default_rng()
         self.mag = mag
 
@@ -107,8 +107,8 @@ class Frost(alb.ImageOnlyTransform):
 
 
 class Snow(alb.ImageOnlyTransform):
-    def __init__(self, mag=-1, always_apply=False, p=1.):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, mag=-1,  p=1.):
+        super().__init__(p=p)
         self.rng = np.random.default_rng()
         self.mag = mag
 
@@ -166,8 +166,8 @@ class Snow(alb.ImageOnlyTransform):
 
 
 class Rain(alb.ImageOnlyTransform):
-    def __init__(self, mag=-1, always_apply=False, p=1.):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, mag=-1,  p=1.):
+        super().__init__(p=p)
         self.rng = np.random.default_rng()
         self.mag = mag
 
@@ -206,8 +206,8 @@ class Rain(alb.ImageOnlyTransform):
 
 
 class Shadow(alb.ImageOnlyTransform):
-    def __init__(self, mag=-1, always_apply=False, p=1.):
-        super().__init__(always_apply=always_apply, p=p)
+    def __init__(self, mag=-1,  p=1.):
+        super().__init__(p=p)
         self.rng = np.random.default_rng()
         self.mag = mag
 

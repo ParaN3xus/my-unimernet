@@ -35,6 +35,9 @@ import cv2
 from torchvision.transforms.functional import resize
 from albumentations.pytorch import ToTensorV2
 import albumentations as alb
+from .image_utils.nougat import Bitmap, Dilation, Erosion
+from .image_utils.weathers import Fog, Frost, Snow, Rain, Shadow
+import math
 
 logger = logging.get_logger(__name__)
 
@@ -158,12 +161,11 @@ class UniMERNetBaseImageProcessor(BaseImageProcessor):
             size=size,
             resample=None,
         )
+        # convert to rgb
+        images = [convert_to_rgb(image) for image in images]
 
         # crop margins
         images = [self.crop_margin(image) for image in images]
-
-        # convert to rgb
-        images = [convert_to_rgb(image) for image in images]
 
         # resize
         images = [
@@ -173,6 +175,16 @@ class UniMERNetBaseImageProcessor(BaseImageProcessor):
         ]
 
         return images
+
+    def transform(self):
+        return alb.Compose(
+            [
+                alb.ToGray(),
+                alb.Normalize(self.image_mean, self.image_std),
+                # alb.Sharpen()
+                ToTensorV2(),
+            ]
+        )
 
     @staticmethod
     def postprocess(images, return_tensors):
@@ -195,11 +207,37 @@ class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
     ) -> None:
         super().__init__(size=size, image_mean=image_mean, image_std=image_std, **kwargs)
 
-        self.transform = alb.Compose(
+    def transform(self):
+        return alb.Compose(
             [
-                alb.ToGray(always_apply=True),
-                alb.Normalize((0.7931, 0.7931, 0.7931),
-                              (0.1738, 0.1738, 0.1738)),
+                alb.Compose(
+                    [
+                        Bitmap(p=0.05),
+                        alb.OneOf([Fog(), Frost(), Snow(),
+                                   Rain(), Shadow()], p=0.2),
+                        alb.OneOf([Erosion((2, 3)), Dilation((2, 3))], p=0.2),
+                        alb.Affine(
+                            scale=(0.85, 1.0),
+                            rotate=(-1, 1),
+                            interpolation=3,
+                            border_mode=0,
+                            fill=[255, 255, 255],
+                            p=1
+                        ),
+                        alb.GridDistortion(distort_limit=0.1, interpolation=3, p=.5)],
+                    p=.15),
+                # alb.InvertImg(p=.15),
+                alb.RGBShift(r_shift_limit=15, g_shift_limit=15,
+                             b_shift_limit=15, p=0.3),
+                alb.GaussNoise(
+                    mean_range=(0, 0),
+                    std_range=(0, math.sqrt(10) / 255),
+                    p=0.2
+                ),
+                alb.RandomBrightnessContrast(.05, (-.2, 0), True, p=0.2),
+                alb.ImageCompression(quality_range=(95, 100), p=.3),
+                alb.ToGray(),
+                alb.Normalize(self.image_mean, self.image_std),
                 # alb.Sharpen()
                 ToTensorV2(),
             ]
@@ -217,7 +255,7 @@ class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
         images = super().preprocess(images=images, size=size, random_padding=False,
                                     image_mean=image_mean, image_std=image_std)
 
-        images = [self.transform(image=np.array(image))[
+        images = [self.transform()(image=np.array(image))[
             'image'][:1] for image in images]
 
         return super().postprocess(images, return_tensors)
@@ -233,38 +271,6 @@ class UniMERNetTrainImageProcessor(UniMERNetBaseImageProcessor):
     ) -> None:
         super().__init__(size=size, image_mean=image_mean, image_std=image_std, **kwargs)
 
-        from .image_utils.nougat import Bitmap, Dilation, Erosion
-        from .image_utils.weathers import Fog, Frost, Snow, Rain, Shadow
-
-        self.transform = alb.Compose(
-            [
-                alb.Compose(
-                    [
-                        Bitmap(p=0.05),
-                        alb.OneOf([Fog(), Frost(), Snow(),
-                                  Rain(), Shadow()], p=0.2),
-                        alb.OneOf([Erosion((2, 3)), Dilation((2, 3))], p=0.2),
-                        alb.ShiftScaleRotate(shift_limit=0, scale_limit=(-.15, 0), rotate_limit=1, border_mode=0,
-                                             interpolation=3,
-                                             value=[255, 255, 255],
-                                             p=1),
-                        alb.GridDistortion(distort_limit=0.1, border_mode=0, interpolation=3, value=[255, 255, 255],
-                                           p=.5)],
-                    p=.15),
-                # alb.InvertImg(p=.15),
-                alb.RGBShift(r_shift_limit=15, g_shift_limit=15,
-                             b_shift_limit=15, p=0.3),
-                alb.GaussNoise(10, p=.2),
-                alb.RandomBrightnessContrast(.05, (-.2, 0), True, p=0.2),
-                alb.ImageCompression(95, p=.3),
-                alb.ToGray(always_apply=True),
-                alb.Normalize((0.7931, 0.7931, 0.7931),
-                              (0.1738, 0.1738, 0.1738)),
-                # alb.Sharpen()
-                ToTensorV2(),
-            ]
-        )
-
     @filter_out_non_signature_kwargs()
     def preprocess(
         self,
@@ -277,7 +283,7 @@ class UniMERNetTrainImageProcessor(UniMERNetBaseImageProcessor):
         images = super().preprocess(images=images, size=size, random_padding=False,
                                     image_mean=image_mean, image_std=image_std)
 
-        images = [self.transform(image=np.array(image))[
+        images = [self.transform()(image=np.array(image))[
             'image'][:1] for image in images]
 
         return super().postprocess(images, return_tensors)
