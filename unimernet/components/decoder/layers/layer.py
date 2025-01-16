@@ -14,3 +14,11 @@ class UniMERNetDecoderLayer(MBartDecoderLayer):
             is_causal=True,
             config=config,
         )
+
+        self.encoder_attn = MBART_ATTENTION_CLASSES[config._attn_implementation](
+            self.embed_dim,
+            config.decoder_attention_heads,
+            dropout=config.attention_dropout,
+            is_decoder=True,
+            config=config,
+        )
