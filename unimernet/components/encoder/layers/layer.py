@@ -5,9 +5,8 @@ from transformers.models.swin.modeling_swin import SwinLayer, window_partition, 
 from transformers.utils import torch_int
 from .conv_enhance import ConvEnhance
 
+
 # Copied from transformers.models.swin.modeling_swin.SwinLayer with Swin->UniMERNet
-
-
 class UniMERNetEncoderLayer(SwinLayer):
     def __init__(self, config, dim, input_resolution, num_heads):
         super().__init__(config, dim, input_resolution, num_heads,

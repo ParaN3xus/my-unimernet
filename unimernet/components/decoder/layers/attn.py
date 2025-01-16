@@ -167,7 +167,7 @@ class SqueezeAttention(BartAttention):
         return attn_output, attn_weights_reshaped, past_key_value
 
 
-# Copied from transformers.models.bart.modeling_bart.BartFlashAttention2 with Bart->MBart
+# Copied from transformers.models.bart.modeling_bart.BartFlashAttention2
 class FlashAttention(BartFlashAttention2):
     """
     MBart flash attention module. This module inherits from `MBartSqueezeAttention` as the weights of the module stays
