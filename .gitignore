@@ -8,3 +8,7 @@ __pycache__
 
 # local
 local/
+
+# models
+utils/models/converted
+utils/models/original/unimer*
