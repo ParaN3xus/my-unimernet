@@ -10,7 +10,8 @@ from .conv_enhance import ConvEnhance
 
 class UniMERNetEncoderLayer(SwinLayer):
     def __init__(self, config, dim, input_resolution, num_heads):
-        super().__init__(config, dim, input_resolution, num_heads, shift_size=0)
+        super().__init__(config, dim, input_resolution, num_heads,
+                         drop_path_rate=config.drop_path_rate, shift_size=0)
 
         self.ce = nn.ModuleList([ConvEnhance(config, dim=dim, k=3),
                                  ConvEnhance(config, dim=dim, k=3)])
