@@ -12,3 +12,6 @@ local/
 # models
 utils/models/converted
 utils/models/original/unimer*
+
+# ide
+.vscode
