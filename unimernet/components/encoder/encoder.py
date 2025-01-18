@@ -4,11 +4,14 @@ from transformers.models.swin.modeling_swin import SwinEncoder, SwinPatchMerging
 from torch import nn
 from .embeddings.embeddings import UniMERNetEmbeddings
 from .layers.stage import UniMERNetEncoderStage
+from .config import UniMERNetEncoderConfig
 import torch
+
+from transformers import AutoConfig, AutoModel
 
 
 class UniMERNetEncoderModel(SwinModel):
-    config_class = DonutSwinConfig
+    config_class = UniMERNetEncoderConfig
 
     def __init__(self, config, add_pooling_layer=True, use_mask_token=False):
         super().__init__(config, add_pooling_layer, use_mask_token)
