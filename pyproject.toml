@@ -18,3 +18,9 @@ dependencies = [
     "transformers>=4.48.0",
     "wand>=0.6.13",
 ]
+
+[tool.setuptools.package-data]
+"unimernet.components.processor.image_utils" = ["frost/*.png", "frost/*.jpg"]
+
+[tool.setuptools.packages.find]
+include = ["unimernet*"]
