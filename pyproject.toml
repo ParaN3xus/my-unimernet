@@ -5,7 +5,7 @@ description = "My UniMERNet impl."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "albumentations>=2.0.0",
+    "albumentations>=2.0.2",
     "ftfy>=6.3.1",
     "ipykernel>=6.29.5",
     "ipywidgets>=8.1.5",
