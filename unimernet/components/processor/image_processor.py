@@ -197,7 +197,7 @@ class UniMERNetBaseImageProcessor(BaseImageProcessor):
         return BatchFeature(data=data, tensor_type=return_tensors)
 
 
-class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
+class UniMERNetTrainImageProcessor(UniMERNetBaseImageProcessor):
     def __init__(
         self,
         size: Optional[Dict[str, int]] = None,
@@ -226,7 +226,7 @@ class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
                         ),
                         alb.GridDistortion(distort_limit=0.1, interpolation=3, p=.5)],
                     p=.15),
-                # alb.InvertImg(p=.15),
+                alb.InvertImg(p=.4),
                 alb.RGBShift(r_shift_limit=15, g_shift_limit=15,
                              b_shift_limit=15, p=0.3),
                 alb.GaussNoise(
@@ -261,7 +261,7 @@ class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
         return super().postprocess(images, return_tensors)
 
 
-class UniMERNetTrainImageProcessor(UniMERNetBaseImageProcessor):
+class UniMERNetEvalImageProcessor(UniMERNetBaseImageProcessor):
     def __init__(
         self,
         size: Optional[Dict[str, int]] = None,
