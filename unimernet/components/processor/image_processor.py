@@ -22,8 +22,6 @@ from torch import TensorType
 from transformers.image_processing_utils import BaseImageProcessor, BatchFeature, get_size_dict
 from transformers.image_transforms import convert_to_rgb
 from transformers.image_utils import (
-    IMAGENET_STANDARD_MEAN,
-    IMAGENET_STANDARD_STD,
     ImageInput,
     make_list_of_images,
     valid_images,
@@ -41,6 +39,9 @@ import math
 
 logger = logging.get_logger(__name__)
 
+UNIMERNET_MEAN = [0.7931, 0.7931, 0.7931]
+UNIMERNET_STD = [0.1738, 0.1738, 0.1738]
+
 
 class UniMERNetBaseImageProcessor(BaseImageProcessor):
     model_input_names = ["pixel_values"]
@@ -56,8 +57,8 @@ class UniMERNetBaseImageProcessor(BaseImageProcessor):
         size = size if size is not None else {"height": 224, "width": 224}
         size = get_size_dict(size)
         self.size = size
-        self.image_mean = image_mean if image_mean is not None else IMAGENET_STANDARD_MEAN
-        self.image_std = image_std if image_std is not None else IMAGENET_STANDARD_STD
+        self.image_mean = image_mean if image_mean is not None else UNIMERNET_MEAN
+        self.image_std = image_std if image_std is not None else UNIMERNET_STD
 
     def resize(
         self,
